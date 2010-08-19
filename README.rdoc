@@ -1,0 +1,71 @@
+= Postfix XFORWARD Extension for Net::SMTP
+
+The postfix-xforward extension adds methods to Ruby's Net::SMTP library to support the
+{XFORWARD}[http://www.postfix.org/XFORWARD_README.html] SMTP extension, as defined and
+supported by the {Postfix MTA}[http://www.postfix.org/].
+
+Code that currently uses
+{Net::SMTP}[http://ruby-doc.org/stdlib/libdoc/net/smtp/rdoc/index.html] as follows:
+
+  require 'net/smtp'
+  to   = 'some@address.tld'
+  from = 'other@domain.tld'
+  msg  = <<EMAIL
+  To: #{to}
+  From: #{from}
+  Subject: Test Message
+  
+  This is a test message.
+  EMAIL
+  
+  Net::SMTP.start('mail.localdomain', 25, 'my-hostname') do |smtp|
+    smtp.send_message(msg, from, to)
+  end
+
+... can now use it this way in order to include XFORWARD attributes:
+
+  require 'postfix-xforward'
+  attr = { 'NAME' => 'actual.domain.tld', 'ADDR' => '123.234.012.123' }
+  to   = 'some@address.tld'
+  from = 'other@domain.tld'
+  msg  = <<EMAIL
+  To: #{to}
+  From: #{from}
+  Subject: Test Message
+
+  This is a test message.
+  EMAIL
+
+  Net::SMTP.start('mail.localdomain', 25, 'my-hostname', nil, nil, nil, attr) do |smtp|
+    smtp.send_message(msg, from, to)
+  end
+
+== Details
+
+The XFORWARD extension, supported by the Postfix MTA is very simple really. It allows the
+SMTP client to include various attributes before the MAIL TO command. These attributes
+tell the server where the email message *really* came from.
+
+This is almost always used on special, private instances of an SMTP server where only
+trusted (usually local) clients can connect. This is usually used in configurations such
+as the following:
+
+  client -> smtp-server-1 -> filter-script -> smtp-server-2 -> nexthop
+
+In these setups, smtp-server-1 and 2 both run under the same Postfix instance in order
+to provide {after-queue content filtering}[http://www.postfix.org/FILTER_README.html].
+The smtp-server-1 instance has access to the actual information about the client that
+is sending the message. It can pass this on, if configured correctly to an external
+filter-script.
+
+This library makes it possible, using Net::SMTP to write filter-script in Ruby and to
+be able to pass original client information on when speaking SMTP to smtp-server-2
+using XFORWARD.
+
+This has just been thrown together so any comments, fixes, improvemnts, or other contributions
+are appreciated.
+
+== Authors and Credits
+
+Authors:: Kendall Gifford
+
