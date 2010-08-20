@@ -8,7 +8,7 @@ gemspec = Gem::Specification.new('postfix-xforward', PostfixXForward::Version::S
   s.authors                   = ['Kendall Gifford']
   s.email                     = ['zettabyte@gmail.com']
   s.homepage                  =  'http://github.com/zettabyte/postfix-xforward'
-# s.rubyforge_project         =  'postfix-xforward'
+  s.rubyforge_project         =  'postfix-xforward'
   s.require_path              =  'lib'
   s.required_rubygems_version =  '>= 1.3.6'
   s.files                     = Dir.glob("lib/**/*") + %w{LICENSE README.rdoc CHANGELOG.rdoc}
