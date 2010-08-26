@@ -1,3 +1,8 @@
+= 0.1.1, release 2010-08-26
+
+* fixed #xtext to allow non-string arguments (returns nil)
+* fixed it so XFORWARD attribute values explicitly set, but set to nil or the empty string will instead send '[UNAVAILABLE]' for the value
+
 = 0.1.0, release 2010-08-19
 
 * Initial Release

@@ -248,6 +248,7 @@ module PostfixXForward
       cap = capable_xforward_attrs
       @xforward_attrs.each do |attr, value|
         if cap.include?(attr)
+          attr = '[UNAVAILABLE]' if value.nil? or value.empty?
           tmp = " #{attr}=#{Utils.xtext(value)}"
           if cmd.length + tmp.length > MAXLEN
             getok(cmd)
