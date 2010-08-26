@@ -247,16 +247,15 @@ module PostfixXForward
       cmd = XCMD.dup
       cap = capable_xforward_attrs
       @xforward_attrs.each do |attr, value|
-        if cap.include?(attr)
-          value = '[UNAVAILABLE]' if value.nil? or value.empty?
-          tmp = " #{attr}=#{Utils.xtext(value)}"
+        if cap.include?(attr) and value.is_a?(String) and value.strip != ''
+          tmp = " #{attr}=#{Utils.xtext(value.strip)}"
           if cmd.length + tmp.length > MAXLEN
             getok(cmd)
             cmd = XCMD.dup
           end
           cmd << tmp
         else
-          logging("ignoring XFORWARD attribute '#{attr}': unsupported by server")
+          logging("ignoring XFORWARD attribute '#{attr}': unsupported by server or no valid value specified")
         end
       end
       getok(cmd) if cmd != XCMD
